@@ -1,0 +1,15 @@
+testing code -> master -> [slaves]
+
+
+
+
+testing code(port(master))
+
+master(config_file)
+
+config_file: 
+	port(master)
+	num_sys
+	for i in range(0,num_sys-2):
+		launch(slave,hostname(master),port(master),port(config_file[2+i]))
+	

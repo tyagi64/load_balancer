@@ -1,0 +1,6 @@
+#!/bin/bash
+
+python3 -m venv testingenv
+source /testingenv/bin/activate
+pip install -r requirements.txt
+deactivate
