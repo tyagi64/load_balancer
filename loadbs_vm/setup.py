@@ -10,7 +10,13 @@ if __name__ == "__main__":
         num_sys = int(config_file[1])
         for i in range(0,num_sys):
                 os.system(f"qemu-img create -f qcow2 slave_{config_file[i+3]} 10G")
-                os.system(f"{config_file[i+3]}")
+                os.system(f"qemu-system-x86_64 -no-reboot  -m 2048 \
+  -cdrom <path to iso> \
+  -drive if=virtio,file=<path to disk>,format=qcow2 \
+  -enable-kvm \
+  -netdev user,id=mynet0,hostfwd=tcp:127.0.0.1:7922-:22\
+  -device virtio-net,netdev=mynet0 \
+  -smp 2 \{config_file[i+3]}")
         input("Enter if done")
         for i in range(0,num_sys):
             os.system(f"scp -P {config_file[i+3]} slave.py root@localhost:/root/")
