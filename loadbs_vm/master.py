@@ -70,7 +70,7 @@ if __name__ == "__main__":
         processes = []
         num_sys = int(config_file[1])
         for i in range(0,num_sys):
-                os.system(f" slave_{config_file[i+3]}")
+                os.system(f"qemu-system-x86_64 -m 4096 -smp 2   -drive if=virtio,file=bsd_disk,format=qcow2 -netdev user,id=mynet0,hostfwd=tcp:127.0.0.1:7922-:22,hostfwd=tcp:0.0.0.0:7980-:80 -device virtio-net,netdev=mynet0 -display none -daemonize slave_{config_file[i+3]}")
                 processes.append(int(config_file[i+3]))
         web.run_app(app, host=hostname, port=int(config_file[2]))
     else:
