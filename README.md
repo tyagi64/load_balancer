@@ -1,8 +1,8 @@
-#Load Balancing Project
+# Load Balancing Project
 
 This project explores two approaches to load balancing: using virtual machines and using microservices with Linux processes.
 
-##Directory Structure
+## Directory Structure
 
 - loadbs_vm: Virtual Machine Approach
     - setup.py: Script to create a virtual machine and set up the load balancing environment
@@ -14,13 +14,13 @@ This project explores two approaches to load balancing: using virtual machines a
     - tester: Tester code to test the load balancer
         - tester.py: Tester code
 
-##Setup and Requirements
+## Setup and Requirements
 
 - No VM disk or installer ISO is included in this archive. QEMU is used for virtual machine setup.
 - The given code works on Linux environment.
 - Python is required for running the setup scripts and load balancing code.
 
-##Usage
+## Usage
 
 1. loadbs_vm:
     - Run setup.py to create a virtual machine and set up the load balancing environment.
