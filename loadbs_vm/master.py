@@ -10,27 +10,15 @@ processes = []
 num_sys = 0
 round_rob = 0
 request_url_base = f"http://"
-async def handle_exit(request):
-    global processes
-    print(processes)
-    for i in processes:
-        try:
-            os.kill(i,signal.SIGTERM)
-            print(f"Sent SIGTERM to process with PID: {i}.")
-        except ProcessLookupError:
-            print(f"No process with PID: {i} found.")
-        except Exception as e:
-            print(f"Error killing process {i}: {e}")
-    return web.json_response({"status":"done"})
 
-async def handle_get(request):
+async def handle_exit(request):
     global round_rob,num_sys,request_url_base
     params = None
     params = request.rel_url.query
     try:
         if None != params:
                 params = dict(params)
-        response = requests.get(request_url_base+processes[round_rob],params=params)
+        response = requests.get(f"{request_url_base}{processes[round_rob]}/exit",params=params)
         round_rob = (round_rob+1)%num_sys
         if response.status_code == 200:
             return web.json_response(response.json(),status=200)
@@ -38,12 +26,28 @@ async def handle_get(request):
             return web.json_response({"message":"Something Went Wrong"})
     except:
         return web.json_response({"message":"Something Went Wrong"})
+async def handle_get(request):
+	global round_rob,num_sys,request_url_base
+	params = None
+	params = request.rel_url.query
+	try:
+		if None != params:
+			params = dict(params)
+#		print(f"{request_url_base}{processes[round_rob]}")
+		response = requests.get(f"{request_url_base}{processes[round_rob]}",params=params)
+		round_rob = (round_rob+1)%num_sys
+		if response.status_code == 200:
+			return web.json_response(response.json(),status=200)
+		else:
+			return web.json_response(response.json())
+	except Exception as e:
+		return web.json_response({"message":f" {str(e)} 1 Something Went Wrong"})
 
 async def handle_post(request):
     global round_rob,num_sys,request_url_base
     try:
         data = await request.json()
-        response = requests.get(request_url_base+processes[round_rob],json=data)
+        response = requests.get(f"{request_url_base}{processes[round_rob]}",json=data)
         round_rob = (round_rob+1)%num_sys
         if response.status_code == 200:
             return web.json_response(response.json(),status=200)
@@ -70,7 +74,7 @@ if __name__ == "__main__":
         processes = []
         num_sys = int(config_file[1])
         for i in range(0,num_sys):
-                os.system(f"qemu-system-x86_64 -m 1024 -smp 1   -drive if=virtio,file=slave_{config_file[i+3]},format=qcow2 -netdev user,id=mynet0,hostfwd=tcp:0.0.0.0:{config_file[i+2]+20}-:22,hostfwd=tcp:0.0.0.0:{config_file[i+3]}-:80 -device virtio-net,netdev=mynet0 -display none -daemonize")
+                os.system(f"qemu-system-x86_64 -m 1024 -drive if=virtio,file=slave_{config_file[i+3]},format=qcow2 -netdev user,id=mynet0,hostfwd=tcp:0.0.0.0:{int(config_file[i+2])+20}-:22,hostfwd=tcp:0.0.0.0:{config_file[i+3]}-:80 -device virtio-net,netdev=mynet0 -display none -daemonize")
                 processes.append(int(config_file[i+3]))
         web.run_app(app, host=hostname, port=int(config_file[2]))
     else:

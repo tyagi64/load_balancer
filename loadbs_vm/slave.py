@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 from aiohttp import web
 import sys 
 
@@ -26,4 +27,4 @@ app.router.add_get("/", handle_get)
 app.router.add_post("/", handle_post)
 
 if __name__ == "__main__":
-        web.run_app(app, host="127.0.0.1", port=8080)
+        web.run_app(app, host="0.0.0.0", port=80)

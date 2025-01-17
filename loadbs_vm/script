@@ -1,0 +1,3 @@
+#!/bin/bash
+
+qemu-system-x86_64 -m 1024 -drive if=virtio,file=slave_3000,format=qcow2 -netdev user,id=mynet0,hostfwd=tcp:0.0.0.0:3020-:22,hostfwd=tcp:0.0.0.0:3000-:80 -device virtio-net,netdev=mynet0 -display none -daemonize
